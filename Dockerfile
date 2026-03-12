@@ -1,7 +1,7 @@
 ARG ROS_DISTRO=humble
 FROM osrf/ros:humble-desktop
 
-LABEL maintainer="Vishwam008 <patelvishwam08@gmail.com>"
+LABEL maintainer="Purvanya <mail2purvanya@gmail.com>"
 
 SHELL ["/bin/bash", "-c"]
 
@@ -18,18 +18,24 @@ RUN apt-get update && apt-get install -y \
     dbus-x11 \
     python3-pip \
     sudo \
-    libyaml-cpp-dev
+    libyaml-cpp-dev \
+    python3-colcon-common-extensions
 
 # ------------------------------------------------
-# Install Gazebo Ignition (Fortress for Humble)
+# Install Gazebo + ROS packages
 # ------------------------------------------------
 
 RUN apt-get update && apt-get install -y \
     ros-humble-ros-gz \
+    ros-humble-ros2-control \
+    ros-humble-ros2-controllers \
     ros-humble-ros-gz-sim \
     ros-humble-ros-gz-bridge \
     ros-humble-xacro \
-    ros-humble-joint-state-publisher
+    ros-humble-gz-ros2-control \
+    ros-humble-joint-state-publisher \
+    ros-humble-robot-state-publisher\
+    gedit
 
 # ------------------------------------------------
 # Create non-root user
@@ -53,5 +59,27 @@ USER $USERNAME
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
 
 WORKDIR /home/devuser
+
+# ------------------------------------------------
+# Copy workspace
+# ------------------------------------------------
+
+COPY --chown=devuser:devuser workspace /home/devuser/workspace
+
+WORKDIR /home/devuser/workspace
+
+# ------------------------------------------------
+# Build workspace
+# ------------------------------------------------
+
+RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
+    colcon build
+
+# ------------------------------------------------
+# Source workspace automatically
+# ------------------------------------------------
+
+RUN echo "source /home/devuser/workspace/install/setup.bash" >> ~/.bashrc
+ENV IGN_GAZEBO_SYSTEM_PLUGIN_PATH=/opt/ros/${ROS_DISTRO}/lib
 
 CMD ["bash"]
