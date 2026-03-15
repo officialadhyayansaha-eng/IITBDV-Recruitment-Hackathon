@@ -45,7 +45,7 @@ def steering(path: list[dict], state: dict):
 
 def throttle_algorithm(target_speed, current_speed, dt):
     c4=0.5
-    c5=-0.9
+    c5=-0.6
     throttle=0.0
     brake=0.0
     if current_speed < target_speed:
@@ -88,7 +88,7 @@ def control(
 
     # TODO: implement your controller here
     steer = steering(path, state)
-    target_speed = 6.5*(1-abs((steering(path,state)))) # m/s, adjust as needed
+    target_speed = 6*(1-0.75*abs(steer))# m/s, adjust as needed
     global integral
     throttle, brake = throttle_algorithm(target_speed, state["vx"], 0.05)
 
