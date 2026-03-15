@@ -1,0 +1,6 @@
+The pixel width was assumed to be 1 pixel corresponding to 1mm as the Field of View is indecipherable from the image to possible measure the focal length in pixels. The distances were thus normalized. 
+
+Assumptions:
+1. All cones are considered of height 30cm and standing upright
+2. Lens distortion is considered negligible
+3. Camera Axis is perpendicular to axis of cone
